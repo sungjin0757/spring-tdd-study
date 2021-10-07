@@ -16,7 +16,7 @@ import javax.persistence.PersistenceContext;
 
 @SpringBootTest
 @Transactional
-public class nativeTestV1 {
+public class TestV1 {
 
     @Autowired
     UserService userService;
@@ -53,6 +53,15 @@ public class nativeTestV1 {
         Assertions.assertThat(findUser3.getPassword()).isEqualTo(user3.getPassword());
 
     }
+
+    @Test
+    @DisplayName("예외 테스트")
+    void 예외_테스트(){
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,()->{
+            userService.findOne(1l);
+        });
+    }
+
 
     private User createUser(String name,String password){
         return User.createUser()

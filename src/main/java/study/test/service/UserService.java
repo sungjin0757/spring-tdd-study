@@ -27,7 +27,7 @@ public class UserService {
         Optional<User> findUser=userRepository.findById(userId);
 
         return findUser.orElseThrow(()->{
-                    throw new RuntimeException();
+                    throw new IllegalArgumentException();
                 }
         );
     }
