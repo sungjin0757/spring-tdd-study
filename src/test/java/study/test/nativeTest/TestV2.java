@@ -1,0 +1,77 @@
+package study.test.nativeTest;
+
+import org.aspectj.lang.annotation.Before;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+import study.test.domain.User;
+import study.test.service.UserService;
+
+@SpringBootTest
+@Transactional
+public class TestV2 {
+
+    @Autowired
+    UserService userService;
+
+    User user1;
+    User user2;
+    User user3;
+
+    @BeforeEach
+    void setUp(){
+        this.user1=createUser("hong","1234");
+        this.user2=createUser("hong1","1234");
+        this.user3=createUser("hong12","1234");
+    }
+
+    @Test
+    @DisplayName("V2 테스트")
+    void V1_테스트(){
+
+        userService.removeAll();
+        Assertions.assertThat(userService.getCountInDb()).isEqualTo(0);
+
+        Long saveId1 = userService.join(user1);
+        Assertions.assertThat(userService.getCountInDb()).isEqualTo(1);
+
+        Long saveId2 = userService.join(user2);
+        Assertions.assertThat(userService.getCountInDb()).isEqualTo(2);
+
+        Long saveId3 = userService.join(user3);
+        Assertions.assertThat(userService.getCountInDb()).isEqualTo(3);
+
+        User findUser1 = userService.findOne(saveId1);
+        Assertions.assertThat(findUser1.getName()).isEqualTo(user1.getName());
+        Assertions.assertThat(findUser1.getPassword()).isEqualTo(user1.getPassword());
+
+        User findUser2 = userService.findOne(saveId2);
+        Assertions.assertThat(findUser2.getName()).isEqualTo(user2.getName());
+        Assertions.assertThat(findUser2.getPassword()).isEqualTo(user2.getPassword());
+
+        User findUser3 = userService.findOne(saveId3);
+        Assertions.assertThat(findUser3.getName()).isEqualTo(user3.getName());
+        Assertions.assertThat(findUser3.getPassword()).isEqualTo(user3.getPassword());
+
+    }
+
+    @Test
+    @DisplayName("예외 테스트")
+    void 예외_테스트(){
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,()->{
+            userService.findOne(1l);
+        });
+    }
+
+
+    private User createUser(String name,String password){
+        return User.createUser()
+                .name(name)
+                .password(password)
+                .build();
+    }
+}
