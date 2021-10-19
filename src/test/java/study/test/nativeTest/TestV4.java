@@ -1,6 +1,6 @@
 package study.test.nativeTest;
 
-import org.aspectj.lang.annotation.Before;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,14 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import study.test.domain.User;
+import study.test.repository.UserRepository;
+import study.test.repository.UserRepositoryImpl;
 import study.test.service.UserService;
 
-@SpringBootTest
+import javax.persistence.EntityManager;
+
 @Transactional
-public class TestV2 {
+@Slf4j
+@SpringBootTest
+public class TestV4 {
 
     @Autowired
+    EntityManager em;
+
     UserService userService;
+    UserRepository userRepository;
 
     User user1;
     User user2;
@@ -27,21 +35,30 @@ public class TestV2 {
         this.user1=createUser("hong","1234");
         this.user2=createUser("hong1","1234");
         this.user3=createUser("hong12","1234");
+
+        this.userRepository=new UserRepositoryImpl(em);
+        this.userService=new UserService(userRepository);
+
+        log.info("userService = {}",this.userService);
+        log.info("this = {} ",this);
     }
 
     @Test
-    @DisplayName("V2 테스트")
-    void V2_테스트(){
+    @DisplayName("V4 테스트")
+    void V4_테스트(){
 
         userService.removeAll();
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(0);
 
+        User user1=createUser("hong","1234");
         Long saveId1 = userService.join(user1);
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(1);
 
+        User user2=createUser("hong1","123");
         Long saveId2 = userService.join(user2);
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(2);
 
+        User user3=createUser("hong12","1233");
         Long saveId3 = userService.join(user3);
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(3);
 

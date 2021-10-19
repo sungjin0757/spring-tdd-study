@@ -1,6 +1,6 @@
 package study.test.nativeTest;
 
-import org.aspectj.lang.annotation.Before;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,8 @@ import study.test.service.UserService;
 
 @SpringBootTest
 @Transactional
-public class TestV2 {
+@Slf4j
+public class TestV3 {
 
     @Autowired
     UserService userService;
@@ -27,11 +28,14 @@ public class TestV2 {
         this.user1=createUser("hong","1234");
         this.user2=createUser("hong1","1234");
         this.user3=createUser("hong12","1234");
+
+        log.info("userService = {}",this.userService);
+        log.info("this = {} ",this);
     }
 
     @Test
-    @DisplayName("V2 테스트")
-    void V2_테스트(){
+    @DisplayName("V3 테스트")
+    void V3_테스트(){
 
         userService.removeAll();
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(0);
