@@ -15,15 +15,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @SpringBootTest
-@Transactional
 public class TestV1 {
 
     @Autowired
     UserService userService;
 
     @Test
-    @DisplayName("V1 테스트")
-    void V1_테스트(){
+    @DisplayName("Add & Find 테스트")
+    void 데이터_추가_테스트(){
 
         userService.removeAll();
         Assertions.assertThat(userService.getCountInDb()).isEqualTo(0);
@@ -57,6 +56,7 @@ public class TestV1 {
     @Test
     @DisplayName("예외 테스트")
     void 예외_테스트(){
+        userService.removeAll();
         org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class,()->{
             userService.findOne(1l);
         });
